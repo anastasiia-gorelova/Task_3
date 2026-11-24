@@ -1,9 +1,10 @@
+import config
 from locators import Profile
 from pages.base_page import BasePage
 
 
 class ProfilePage(BasePage):
-    path = "/account/profile"
+    path = config.PROFILE_PATH
 
     def name(self):
         return self.visible(Profile.NAME).get_property("value")

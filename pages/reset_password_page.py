@@ -1,9 +1,10 @@
+import config
 from locators import Auth
 from pages.base_page import BasePage
 
 
 class ResetPasswordPage(BasePage):
-    path = "/reset-password"
+    path = config.RESET_PASSWORD_PATH
 
     def code_field_visible(self):
         return self.at_page() and self.visible(Auth.RESET_CODE).is_displayed()

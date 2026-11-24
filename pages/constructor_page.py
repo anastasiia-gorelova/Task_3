@@ -19,7 +19,7 @@ class ConstructorPage(BasePage):
     def add_bun(self):
         bun = self.visible(Constructor.BUN)
         basket = self.visible(Constructor.BASKET)
-        self.driver.execute_script("""
+        self.execute_script("""
             const [source, target] = arguments;
             const dataTransfer = new DataTransfer();
             for (const [element, type] of [[source, 'dragstart'], [target, 'dragenter'],

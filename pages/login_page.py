@@ -1,9 +1,10 @@
+import config
 from locators import Auth
 from pages.base_page import BasePage
 
 
 class LoginPage(BasePage):
-    path = "/login"
+    path = config.LOGIN_PATH
 
     def sign_in(self, user):
         self.visible(Auth.EMAIL).send_keys(user["email"])

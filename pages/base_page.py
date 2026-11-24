@@ -2,12 +2,12 @@ from selenium.common.exceptions import ElementClickInterceptedException, StaleEl
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
-from config import BASE_URL
+from config import BASE_URL, CONSTRUCTOR_PATH
 from locators import Header, Modal
 
 
 class BasePage:
-    path = "/"
+    path = CONSTRUCTOR_PATH
 
     def __init__(self, driver):
         self.driver = driver
@@ -15,6 +15,9 @@ class BasePage:
 
     def open(self):
         self.driver.get(BASE_URL + self.path)
+
+    def execute_script(self, script, *args):
+        return self.driver.execute_script(script, *args)
 
     def visible(self, locator):
         return self.wait.until(ec.visibility_of_element_located(locator))

@@ -5,7 +5,7 @@ import pytest
 import requests
 from selenium import webdriver
 
-from config import BASE_URL
+import config
 from pages.constructor_page import ConstructorPage
 from pages.login_page import LoginPage
 
@@ -32,13 +32,13 @@ def driver(request):
 @pytest.fixture
 def user():
     data = {"email": f"ui-{uuid4().hex}@example.com", "password": uuid4().hex, "name": "Stellar Tester"}
-    response = requests.post(f"{BASE_URL}/api/auth/register", json=data, timeout=30)
+    response = requests.post(config.REGISTER_URL, json=data, timeout=30)
     response.raise_for_status()
     token = response.json()["accessToken"]
     try:
         yield data, token
     finally:
-        requests.delete(f"{BASE_URL}/api/auth/user", headers={"Authorization": token},
+        requests.delete(config.USER_URL, headers={"Authorization": token},
                         timeout=30).raise_for_status()
 
 
@@ -54,7 +54,7 @@ def signed_in(driver, user):
 
 @pytest.fixture
 def create_order(user):
-    catalog = requests.get(f"{BASE_URL}/api/ingredients", timeout=20)
+    catalog = requests.get(config.INGREDIENTS_URL, timeout=20)
     catalog.raise_for_status()
     items = catalog.json()["data"]
     ingredients = [next(item["_id"] for item in items if item["type"] == kind)
@@ -62,7 +62,7 @@ def create_order(user):
 
     def create():
         response = requests.post(
-            f"{BASE_URL}/api/orders", json={"ingredients": ingredients},
+            config.ORDERS_URL, json={"ingredients": ingredients},
             headers={"Authorization": user[1]}, timeout=45,
         )
         response.raise_for_status()

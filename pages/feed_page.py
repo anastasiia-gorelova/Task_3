@@ -1,9 +1,10 @@
+import config
 from locators import Feed, Modal
 from pages.base_page import BasePage
 
 
 class FeedPage(BasePage):
-    path = "/feed"
+    path = config.FEED_PATH
 
     def title(self):
         return self.visible(Feed.TITLE).text
@@ -11,7 +12,7 @@ class FeedPage(BasePage):
     def open_first_order(self):
         card = self.visible(Feed.FIRST_ORDER)
         number = int(card.find_element(*Feed.CARD_NUMBER).text.lstrip("#"))
-        self.click(Feed.order_card("/feed/", number))
+        self.click(Feed.order_card(config.FEED_ORDER_PREFIX, number))
         return f"#{number:06d}"
 
     def detail_number(self):
@@ -19,7 +20,7 @@ class FeedPage(BasePage):
         return self.visible(Modal.DETAIL_NUMBER).text
 
     def order_number(self, number):
-        return self.visible(Feed.order_card("/feed/", number)).text
+        return self.visible(Feed.order_card(config.FEED_ORDER_PREFIX, number)).text
 
     def total(self):
         return int(self.visible(Feed.TOTAL).text)
@@ -36,7 +37,7 @@ class FeedPage(BasePage):
     def watch_in_progress(self):
         # Заказ может сменить статус до ответа POST. Сохраняем номера,
         # показанные в этом списке с момента начала наблюдения.
-        self.driver.execute_script("""
+        self.execute_script("""
             const list = arguments[0];
             window.observedOrders = new Set();
             const read = () => {
@@ -51,5 +52,5 @@ class FeedPage(BasePage):
         """, self.visible(Feed.IN_PROGRESS))
 
     def saw_in_progress(self, number):
-        return self.wait.until(lambda d: d.execute_script(
+        return self.wait.until(lambda _: self.execute_script(
             "return window.observedOrders.has(arguments[0])", number))
